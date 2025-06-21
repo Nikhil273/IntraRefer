@@ -1,10 +1,11 @@
-# RefConnect - Job Referral Platform
+# IntraRefer - Job Referral Platform
 
 A comprehensive MERN stack application that connects job seekers with referrers to facilitate meaningful career opportunities through employee referrals.
 
 ## 🚀 Features
 
 ### Core Functionality
+
 - **Role-based Authentication**: Job Seekers, Referrers, and Admin roles
 - **Referral System**: Post and apply for job referrals
 - **Application Management**: Track application status and manage responses
@@ -15,6 +16,7 @@ A comprehensive MERN stack application that connects job seekers with referrers 
 ### User Roles
 
 #### Job Seekers
+
 - Create detailed profiles with skills and experience
 - Browse and search referral opportunities
 - Apply to referrals (3 per week for free users)
@@ -22,12 +24,14 @@ A comprehensive MERN stack application that connects job seekers with referrers 
 - Premium features with subscription
 
 #### Referrers
+
 - Post job referral opportunities
 - Manage incoming applications
 - Accept/reject applications with feedback
 - Company-based profile management
 
 #### Admin
+
 - User management and analytics
 - Content moderation
 - Payment and subscription tracking
@@ -36,6 +40,7 @@ A comprehensive MERN stack application that connects job seekers with referrers 
 ## 🛠 Tech Stack
 
 ### Backend
+
 - **Node.js** with Express.js
 - **MongoDB** with Mongoose ODM
 - **JWT** authentication with bcrypt
@@ -44,6 +49,7 @@ A comprehensive MERN stack application that connects job seekers with referrers 
 - **Express Rate Limiting** and security middleware
 
 ### Frontend
+
 - **React.js** with functional components and hooks
 - **React Router** for navigation
 - **React Query** for state management and API calls
@@ -75,6 +81,7 @@ refconnect-mern/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js (v14 or higher)
 - MongoDB (local or Atlas)
 - Cloudinary account
@@ -83,44 +90,48 @@ refconnect-mern/
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd refconnect-mern
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm run install-all
    ```
 
 3. **Environment Setup**
-   
+
    Create `.env` file in the `server` directory:
+
    ```env
    # Database
    MONGODB_URI=mongodb://localhost:27017/refconnect
-   
+
    # JWT
    JWT_SECRET=your_super_secret_jwt_key_here
-   
+
    # Server
    PORT=5000
    NODE_ENV=development
-   
+
    # Cloudinary
    CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
    CLOUDINARY_API_KEY=your_cloudinary_api_key
    CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-   
+
    # Razorpay
    RAZORPAY_KEY_ID=your_razorpay_key_id
    RAZORPAY_KEY_SECRET=your_razorpay_key_secret
-   
+
    # Frontend URL
    CLIENT_URL=http://localhost:3000
    ```
 
 4. **Start the application**
+
    ```bash
    npm run dev
    ```
@@ -130,6 +141,7 @@ refconnect-mern/
 ### Database Seeding
 
 To populate the database with sample data:
+
 ```bash
 cd server
 npm run seed
@@ -143,6 +155,7 @@ The platform integrates with Razorpay for subscription payments:
 - **Yearly Plan**: ₹990/year (17% savings)
 
 ### Premium Features
+
 - Unlimited job applications
 - Verified badge on profile
 - AI-powered job matching
@@ -163,18 +176,21 @@ The platform integrates with Razorpay for subscription payments:
 ## 📱 API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/register` - User registration
 - `POST /api/auth/login` - User login
 - `GET /api/auth/me` - Get current user
 - `POST /api/auth/logout` - User logout
 
 ### Users
+
 - `GET /api/users/profile` - Get user profile
 - `PUT /api/users/profile` - Update user profile
 - `POST /api/users/upload-avatar` - Upload avatar
 - `POST /api/users/upload-resume` - Upload resume
 
 ### Referrals
+
 - `GET /api/referrals` - Get all referrals
 - `POST /api/referrals` - Create referral
 - `GET /api/referrals/:id` - Get referral by ID
@@ -182,11 +198,13 @@ The platform integrates with Razorpay for subscription payments:
 - `DELETE /api/referrals/:id` - Delete referral
 
 ### Applications
+
 - `GET /api/applications` - Get applications
 - `POST /api/applications` - Create application
 - `PUT /api/applications/:id/status` - Update application status
 
 ### Payments
+
 - `POST /api/payments/create-order` - Create Razorpay order
 - `POST /api/payments/verify` - Verify payment
 - `GET /api/payments/subscription-status` - Get subscription status
@@ -237,11 +255,13 @@ cd server && npm run seed
 ## 🚀 Deployment
 
 ### Backend Deployment
+
 1. Set up MongoDB Atlas or cloud MongoDB
 2. Configure environment variables
 3. Deploy to platforms like Heroku, Railway, or DigitalOcean
 
 ### Frontend Deployment
+
 1. Build the React app: `npm run build`
 2. Deploy to Netlify, Vercel, or similar platforms
 3. Update API base URL in production
@@ -261,6 +281,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 🆘 Support
 
 For support and questions:
+
 - Create an issue on GitHub
 - Email: support@refconnect.com
 - Documentation: [docs.refconnect.com](https://docs.refconnect.com)
