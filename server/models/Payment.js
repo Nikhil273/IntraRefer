@@ -6,7 +6,7 @@ const paymentSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  
+
   // Razorpay Details
   razorpayOrderId: {
     type: String,
@@ -18,7 +18,7 @@ const paymentSchema = new mongoose.Schema({
   razorpaySignature: {
     type: String
   },
-  
+
   // Payment Information
   amount: {
     type: Number,
@@ -34,7 +34,7 @@ const paymentSchema = new mongoose.Schema({
     enum: ['created', 'attempted', 'paid', 'failed', 'cancelled', 'refunded'],
     default: 'created'
   },
-  
+
   // Subscription Details
   subscriptionType: {
     type: String,
@@ -47,7 +47,7 @@ const paymentSchema = new mongoose.Schema({
   subscriptionEnd: {
     type: Date
   },
-  
+
   // Payment Metadata
   paymentMethod: {
     type: String,
@@ -56,14 +56,14 @@ const paymentSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    default: 'RefConnect Premium Subscription'
+    default: 'IntraRefer Premium Subscription'
   },
-  
+
   // Failure Information
   failureReason: {
     type: String
   },
-  
+
   // Refund Information
   refundId: {
     type: String
@@ -78,7 +78,7 @@ const paymentSchema = new mongoose.Schema({
   refundedAt: {
     type: Date
   },
-  
+
   // Additional Metadata
   userAgent: {
     type: String
@@ -86,7 +86,7 @@ const paymentSchema = new mongoose.Schema({
   ipAddress: {
     type: String
   },
-  
+
   // Webhook Information
   webhookReceived: {
     type: Boolean,
@@ -107,9 +107,9 @@ paymentSchema.index({ status: 1, createdAt: -1 });
 paymentSchema.index({ subscriptionStart: 1, subscriptionEnd: 1 });
 
 // Virtual for subscription duration in days
-paymentSchema.virtual('subscriptionDuration').get(function() {
+paymentSchema.virtual('subscriptionDuration').get(function () {
   if (!this.subscriptionStart || !this.subscriptionEnd) return 0;
-  
+
   const start = new Date(this.subscriptionStart);
   const end = new Date(this.subscriptionEnd);
   const diffTime = end - start;
@@ -117,11 +117,11 @@ paymentSchema.virtual('subscriptionDuration').get(function() {
 });
 
 // Method to mark payment as successful
-paymentSchema.methods.markAsSuccessful = async function(paymentId, signature) {
+paymentSchema.methods.markAsSuccessful = async function (paymentId, signature) {
   this.razorpayPaymentId = paymentId;
   this.razorpaySignature = signature;
   this.status = 'paid';
-  
+
   // Set subscription dates
   this.subscriptionStart = new Date();
   if (this.subscriptionType === 'monthly') {
@@ -129,9 +129,9 @@ paymentSchema.methods.markAsSuccessful = async function(paymentId, signature) {
   } else if (this.subscriptionType === 'yearly') {
     this.subscriptionEnd = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 365 days
   }
-  
+
   await this.save();
-  
+
   // Update user subscription status
   const User = mongoose.model('User');
   await User.findByIdAndUpdate(this.user, {
@@ -140,26 +140,26 @@ paymentSchema.methods.markAsSuccessful = async function(paymentId, signature) {
     subscriptionEnd: this.subscriptionEnd,
     subscriptionId: this._id
   });
-  
+
   return this;
 };
 
 // Method to mark payment as failed
-paymentSchema.methods.markAsFailed = function(reason) {
+paymentSchema.methods.markAsFailed = function (reason) {
   this.status = 'failed';
   this.failureReason = reason;
   return this.save();
 };
 
 // Method to process refund
-paymentSchema.methods.processRefund = async function(refundAmount, reason) {
+paymentSchema.methods.processRefund = async function (refundAmount, reason) {
   this.status = 'refunded';
   this.refundAmount = refundAmount || this.amount;
   this.refundReason = reason;
   this.refundedAt = new Date();
-  
+
   await this.save();
-  
+
   // Update user subscription status if fully refunded
   if (this.refundAmount >= this.amount) {
     const User = mongoose.model('User');
@@ -170,21 +170,21 @@ paymentSchema.methods.processRefund = async function(refundAmount, reason) {
       subscriptionId: null
     });
   }
-  
+
   return this;
 };
 
 // Static method to get payment statistics
-paymentSchema.statics.getStatistics = function(startDate, endDate) {
+paymentSchema.statics.getStatistics = function (startDate, endDate) {
   const matchStage = {};
-  
+
   if (startDate && endDate) {
     matchStage.createdAt = {
       $gte: new Date(startDate),
       $lte: new Date(endDate)
     };
   }
-  
+
   return this.aggregate([
     { $match: matchStage },
     {
@@ -198,7 +198,7 @@ paymentSchema.statics.getStatistics = function(startDate, endDate) {
 };
 
 // Static method to get revenue statistics
-paymentSchema.statics.getRevenueStats = function() {
+paymentSchema.statics.getRevenueStats = function () {
   return this.aggregate([
     { $match: { status: 'paid' } },
     {
@@ -216,7 +216,7 @@ paymentSchema.statics.getRevenueStats = function() {
 };
 
 // Static method to find active subscriptions
-paymentSchema.statics.findActiveSubscriptions = function() {
+paymentSchema.statics.findActiveSubscriptions = function () {
   const now = new Date();
   return this.find({
     status: 'paid',

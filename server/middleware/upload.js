@@ -13,7 +13,7 @@ cloudinary.config({
 const resumeStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'refconnect/resumes',
+    folder: 'IntraRefer/resumes',
     allowed_formats: ['pdf', 'doc', 'docx'],
     resource_type: 'raw',
     public_id: (req, file) => {
@@ -28,7 +28,7 @@ const resumeStorage = new CloudinaryStorage({
 const avatarStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'refconnect/avatars',
+    folder: 'IntraRefer/avatars',
     allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],
     transformation: [
       { width: 300, height: 300, crop: 'fill', gravity: 'face' },
@@ -49,7 +49,7 @@ const resumeFileFilter = (req, file, cb) => {
     'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
   ];
-  
+
   if (allowedMimes.includes(file.mimetype)) {
     cb(null, true);
   } else {
@@ -65,7 +65,7 @@ const imageFileFilter = (req, file, cb) => {
     'image/png',
     'image/gif'
   ];
-  
+
   if (allowedMimes.includes(file.mimetype)) {
     cb(null, true);
   } else {
@@ -94,31 +94,31 @@ const uploadAvatar = multer({
 const handleUploadError = (error, req, res, next) => {
   if (error instanceof multer.MulterError) {
     if (error.code === 'LIMIT_FILE_SIZE') {
-      return res.status(400).json({ 
+      return res.status(400).json({
         message: 'File too large',
         maxSize: error.field === 'resume' ? '5MB' : '2MB'
       });
     }
     if (error.code === 'LIMIT_UNEXPECTED_FILE') {
-      return res.status(400).json({ 
+      return res.status(400).json({
         message: 'Unexpected field name',
         expectedField: error.field
       });
     }
   }
-  
+
   if (error.message.includes('Invalid file type')) {
     return res.status(400).json({ message: error.message });
   }
-  
+
   next(error);
 };
 
 // Helper function to delete file from Cloudinary
 const deleteFromCloudinary = async (publicId, resourceType = 'image') => {
   try {
-    const result = await cloudinary.uploader.destroy(publicId, { 
-      resource_type: resourceType 
+    const result = await cloudinary.uploader.destroy(publicId, {
+      resource_type: resourceType
     });
     return result;
   } catch (error) {
@@ -130,18 +130,18 @@ const deleteFromCloudinary = async (publicId, resourceType = 'image') => {
 // Helper function to extract public ID from Cloudinary URL
 const extractPublicId = (url) => {
   if (!url) return null;
-  
+
   const parts = url.split('/');
   const filename = parts[parts.length - 1];
   const publicId = filename.split('.')[0];
-  
+
   // Include folder path if present
-  const folderIndex = parts.indexOf('refconnect');
+  const folderIndex = parts.indexOf('IntraRefer');
   if (folderIndex !== -1) {
     const folderPath = parts.slice(folderIndex, -1).join('/');
     return `${folderPath}/${publicId}`;
   }
-  
+
   return publicId;
 };
 

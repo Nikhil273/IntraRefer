@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { 
-  Briefcase, 
-  Users, 
-  TrendingUp, 
-  CheckCircle, 
+import {
+  Briefcase,
+  Users,
+  TrendingUp,
+  CheckCircle,
   ArrowRight,
   Star,
   Building,
@@ -61,7 +61,7 @@ const LandingPage = () => {
     {
       name: 'Priya Sharma',
       role: 'Software Engineer at Google',
-      content: 'RefConnect helped me land my dream job! The referral process was smooth and the platform made networking so much easier.',
+      content: 'IntraRefer helped me land my dream job! The referral process was smooth and the platform made networking so much easier.',
       rating: 5,
       avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b589?w=150'
     },
@@ -109,7 +109,7 @@ const LandingPage = () => {
               <div className="bg-gradient-to-r from-primary-600 to-blue-600 p-2 rounded-lg">
                 <Briefcase className="h-6 w-6 text-white" />
               </div>
-              <span className="font-bold text-xl text-gray-900">RefConnect</span>
+              <span className="font-bold text-xl text-gray-900">IntraRefer</span>
             </div>
             <Link
               to="/auth"
@@ -139,8 +139,8 @@ const LandingPage = () => {
               transition={{ delay: 0.1 }}
               className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto"
             >
-              Connect with employees at top companies who can refer you to your next opportunity. 
-              RefConnect makes networking and job referrals simple, transparent, and effective.
+              Connect with employees at top companies who can refer you to your next opportunity.
+              IntraRefer makes networking and job referrals simple, transparent, and effective.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -191,13 +191,13 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Why Choose RefConnect?
+              Why Choose IntraRefer?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Our platform is designed to make job referrals more accessible, efficient, and successful for everyone involved.
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
               <motion.div
@@ -229,7 +229,7 @@ const LandingPage = () => {
               Start for free, upgrade when you need more features
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {/* Free Plan */}
             <motion.div
@@ -242,7 +242,7 @@ const LandingPage = () => {
                 <div className="text-4xl font-bold text-gray-900 mb-2">₹0</div>
                 <p className="text-gray-600">Perfect for getting started</p>
               </div>
-              
+
               <ul className="space-y-4 mb-8">
                 {pricingFeatures.map((feature, index) => (
                   <li key={index} className="flex items-center">
@@ -251,7 +251,7 @@ const LandingPage = () => {
                   </li>
                 ))}
               </ul>
-              
+
               <Link
                 to="/auth"
                 className="w-full bg-gray-100 text-gray-900 py-3 px-6 rounded-lg font-medium hover:bg-gray-200 transition-colors text-center block"
@@ -272,13 +272,13 @@ const LandingPage = () => {
                   Most Popular
                 </span>
               </div>
-              
+
               <div className="text-center mb-8">
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Premium</h3>
                 <div className="text-4xl font-bold text-gray-900 mb-2">₹99</div>
                 <p className="text-gray-600">per month</p>
               </div>
-              
+
               <ul className="space-y-4 mb-8">
                 {premiumFeatures.map((feature, index) => (
                   <li key={index} className="flex items-center">
@@ -287,7 +287,7 @@ const LandingPage = () => {
                   </li>
                 ))}
               </ul>
-              
+
               <Link
                 to="/auth"
                 className="w-full bg-gradient-to-r from-primary-600 to-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:from-primary-700 hover:to-blue-700 transition-all text-center block"
@@ -307,10 +307,10 @@ const LandingPage = () => {
               Success Stories
             </h2>
             <p className="text-xl text-gray-600">
-              Hear from professionals who've transformed their careers through RefConnect
+              Hear from professionals who've transformed their careers through IntraRefer
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
               <motion.div
@@ -356,7 +356,7 @@ const LandingPage = () => {
             to="/auth"
             className="bg-white text-primary-600 px-8 py-4 rounded-lg font-medium hover:bg-gray-100 transition-colors inline-flex items-center group"
           >
-            Join RefConnect Today
+            Join IntraRefer Today
             <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
@@ -371,7 +371,7 @@ const LandingPage = () => {
                 <div className="bg-gradient-to-r from-primary-600 to-blue-600 p-2 rounded-lg">
                   <Briefcase className="h-6 w-6 text-white" />
                 </div>
-                <span className="font-bold text-xl">RefConnect</span>
+                <span className="font-bold text-xl">IntraRefer</span>
               </div>
               <p className="text-gray-400 mb-4">
                 Connecting job seekers with referrers to create meaningful career opportunities.
@@ -381,7 +381,7 @@ const LandingPage = () => {
                 <span>Made in India</span>
               </div>
             </div>
-            
+
             <div>
               <h3 className="font-semibold mb-4">Platform</h3>
               <ul className="space-y-2 text-gray-400">
@@ -391,7 +391,7 @@ const LandingPage = () => {
                 <li><a href="#" className="hover:text-white transition-colors">Help center</a></li>
               </ul>
             </div>
-            
+
             <div>
               <h3 className="font-semibold mb-4">Company</h3>
               <ul className="space-y-2 text-gray-400">
@@ -402,10 +402,10 @@ const LandingPage = () => {
               </ul>
             </div>
           </div>
-          
+
           <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
             <div className="text-gray-400">
-              © 2025 RefConnect. All rights reserved.
+              © 2025 IntraRefer. All rights reserved.
             </div>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">Twitter</a>

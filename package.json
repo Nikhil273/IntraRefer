@@ -1,5 +1,5 @@
 {
-  "name": "refconnect-mern",
+  "name": "intrarefer-mern",
   "version": "1.0.0",
   "description": "Job Referral Platform - MERN Stack",
   "main": "server/index.js",
@@ -12,8 +12,12 @@
     "install-client": "cd client && npm install",
     "install-all": "npm run install-server && npm run install-client"
   },
-  "keywords": ["mern", "job-referral", "razorpay"],
-  "author": "RefConnect Team",
+  "keywords": [
+    "mern",
+    "job-referral",
+    "razorpay"
+  ],
+  "author": "IntraRefer Team",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2"

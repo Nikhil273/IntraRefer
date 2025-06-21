@@ -1,7 +1,7 @@
 {
-  "name": "refconnect-server",
+  "name": "IntraRefer-server",
   "version": "1.0.0",
-  "description": "RefConnect Backend API",
+  "description": "IntraRefer Backend API",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

@@ -1,7 +1,7 @@
 {
-  "name": "refconnect-client",
+  "name": "IntraRefer-client",
   "version": "1.0.0",
-  "description": "RefConnect Frontend - React App",
+  "description": "IntraRefer Frontend - React App",
   "private": true,
   "dependencies": {
     "react": "^18.2.0",

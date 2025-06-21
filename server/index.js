@@ -45,15 +45,15 @@ app.use('/api/admin', adminRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {
-  res.json({ message: 'RefConnect API is running!', timestamp: new Date().toISOString() });
+  res.json({ message: 'IntraRefer API is running!', timestamp: new Date().toISOString() });
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ 
-    message: 'Something went wrong!', 
-    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error' 
+  res.status(500).json({
+    message: 'Something went wrong!',
+    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
   });
 });
 
@@ -63,10 +63,10 @@ app.use('*', (req, res) => {
 });
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/refconnect')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/IntraRefer')
   .then(() => {
     console.log('✅ Connected to MongoDB');
-    
+
     // Start server
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => {

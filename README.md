@@ -60,7 +60,7 @@ A comprehensive MERN stack application that connects job seekers with referrers 
 ## 📁 Project Structure
 
 ```
-refconnect-mern/
+IntraRefer-mern/
 ├── server/                 # Backend API
 │   ├── models/            # MongoDB schemas
 │   ├── routes/            # API routes
@@ -93,7 +93,7 @@ refconnect-mern/
 
    ```bash
    git clone <repository-url>
-   cd refconnect-mern
+   cd IntraRefer-mern
    ```
 
 2. **Install dependencies**
@@ -108,7 +108,7 @@ refconnect-mern/
 
    ```env
    # Database
-   MONGODB_URI=mongodb://localhost:27017/refconnect
+   MONGODB_URI=mongodb://localhost:27017/IntraRefer
 
    # JWT
    JWT_SECRET=your_super_secret_jwt_key_here
@@ -283,8 +283,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 For support and questions:
 
 - Create an issue on GitHub
-- Email: support@refconnect.com
-- Documentation: [docs.refconnect.com](https://docs.refconnect.com)
+- Email: support@IntraRefer.com
+- Documentation: [docs.IntraRefer.com](https://docs.IntraRefer.com)
 
 ## 🙏 Acknowledgments
 
@@ -296,4 +296,4 @@ For support and questions:
 
 ---
 
-**RefConnect** - Connecting careers, one referral at a time. 🚀
+**IntraRefer** - Connecting careers, one referral at a time. 🚀
