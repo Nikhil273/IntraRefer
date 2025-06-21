@@ -7,11 +7,11 @@ require('dotenv').config();
 
 // Import routes
 const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/users');
-const referralRoutes = require('./routes/referrals');
-const applicationRoutes = require('./routes/applications');
+// const userRoutes = require('./routes/users');
+// const referralRoutes = require('./routes/referrals');
+// const applicationRoutes = require('./routes/applications');
 const paymentRoutes = require('./routes/payments');
-const adminRoutes = require('./routes/admin');
+// const adminRoutes = require('./routes/admin');
 
 const app = express();
 
@@ -37,11 +37,11 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/referrals', referralRoutes);
-app.use('/api/applications', applicationRoutes);
+// app.use('/api/users', userRoutes);
+// app.use('/api/referrals', referralRoutes);
+// app.use('/api/applications', applicationRoutes);
 app.use('/api/payments', paymentRoutes);
-app.use('/api/admin', adminRoutes);
+// app.use('/api/admin', adminRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {
