@@ -7,7 +7,7 @@ require('dotenv').config();
 
 // Import routes
 const authRoutes = require('./routes/auth');
-// const userRoutes = require('./routes/users');
+const userRoutes = require('./routes/userRoutes');
 // const referralRoutes = require('./routes/referrals');
 // const applicationRoutes = require('./routes/applications');
 const paymentRoutes = require('./routes/payments');
@@ -37,7 +37,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Routes
 app.use('/api/auth', authRoutes);
-// app.use('/api/users', userRoutes);
+app.use('/api/users', userRoutes);
 // app.use('/api/referrals', referralRoutes);
 // app.use('/api/applications', applicationRoutes);
 app.use('/api/payments', paymentRoutes);

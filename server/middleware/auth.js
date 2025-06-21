@@ -128,6 +128,7 @@ const checkApplicationLimit = async (req, res, next) => {
 const optionalAuth = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
+    console.log('Optional auth header:', authHeader);
     const token = authHeader && authHeader.split(' ')[1];
 
     if (token) {

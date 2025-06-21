@@ -1,12 +1,6 @@
-// /server/routes/authRoutes.js
-
 const express = require('express');
 const router = express.Router();
-
-// Import authentication middleware (ensure correct path)
-const { authenticateToken } = require('../middleware/auth'); // Updated path as per your structure
-
-// Import controller functions and validation rules
+const { authenticateToken } = require('../middleware/auth');
 const {
   registerUser,
   registerValidation,
