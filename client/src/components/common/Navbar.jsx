@@ -33,13 +33,13 @@ const Navbar = () => {
       >
         {/* Logo */}
         <a href="/" className="flex items-center gap-2">
-          <img
-            src={
-              "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/dummyLogo/dummyLogoWhite.svg"
-            }
-            alt="logo"
-            className={`h-9 ${isScrolled && "invert opacity-80"}`}
-          />
+          <p
+            className={`text-3xl uppercase ${
+              isScrolled && "invert opacity-80"
+            }`}
+          >
+            IntraRef
+          </p>
         </a>
 
         {/* Desktop Nav */}
