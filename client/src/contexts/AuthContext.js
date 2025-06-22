@@ -247,9 +247,9 @@ export const AuthProvider = ({ children }) => {
     const isActive = isSubscribed();
     const daysRemaining = isActive
       ? Math.ceil(
-          (new Date(state.user.subscriptionEnd) - new Date()) /
-            (1000 * 60 * 60 * 24)
-        )
+        (new Date(state.user.subscriptionEnd) - new Date()) /
+        (1000 * 60 * 60 * 24)
+      )
       : 0;
 
     return {
