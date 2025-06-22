@@ -1,5 +1,5 @@
 {
-  "name": "IntraRefer-server",
+  "name": "intrarefer-server",
   "version": "1.0.0",
   "description": "IntraRefer Backend API",
   "main": "index.js",
