@@ -145,9 +145,6 @@ const uploadAvatar = asyncHandler(async (req, res) => {
     throw new Error('User not found.');
   }
 
-  // Upload image to Cloudinary
-  // You might want to specify a folder, quality, transformations etc.
-  // Ensure the file path is correct (req.file.path or req.file.buffer depending on multer config)
   try {
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: 'job_portal_avatars', // Optional: organize your uploads
@@ -186,19 +183,17 @@ const uploadResume = asyncHandler(async (req, res) => {
   const user = await User.findById(userId);
 
   if (!user) {
-    // Clean up the uploaded file if user not found
+    // Clean up the temporary file stored by multer
     await fs.unlink(req.file.path);
     res.status(404);
     throw new Error('User not found.');
   }
 
   try {
-    // Upload PDF to Cloudinary as a raw file or specific resource type for documents
-    // 'raw' resource type is good for general files like PDFs
     const result = await cloudinary.uploader.upload(req.file.path, {
       resource_type: "raw", // Important for non-image files like PDF
-      folder: 'job_portal_resumes', // Optional: organize your uploads
-      public_id: `resume_${userId}_${Date.now()}` // Optional: unique public ID
+      folder: 'job_portal_resumes',
+      public_id: `resume_${User.name}_${userId}_${Date.now()}`
     });
 
     // Delete old resume from Cloudinary if it exists

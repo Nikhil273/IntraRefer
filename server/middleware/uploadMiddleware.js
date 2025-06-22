@@ -32,7 +32,6 @@ const fileFilter = (allowedFileTypes) => (req, file, cb) => {
   }
 };
 
-// --- Export specific upload configurations ---
 
 // For Images (e.g., Avatar)
 const uploadImage = multer({

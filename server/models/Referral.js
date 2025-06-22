@@ -70,20 +70,20 @@ const referralSchema = new mongoose.Schema({
   applicationDeadline: {
     type: Date,
     validate: {
-      validator: function(value) {
+      validator: function (value) {
         return !value || value > new Date();
       },
       message: 'Application deadline must be in the future'
     }
   },
-  
+
   // Referrer Information
   referrer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
-  
+
   // Status and Visibility
   status: {
     type: String,
@@ -94,7 +94,7 @@ const referralSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
-  
+
   // Analytics
   views: {
     type: Number,
@@ -104,13 +104,13 @@ const referralSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  
+
   // Premium Features
   isPriority: {
     type: Boolean,
     default: false
   },
-  
+
   // Additional Information
   workMode: {
     type: String,
@@ -145,53 +145,53 @@ referralSchema.index({
 });
 
 // Virtual for calculating days until deadline
-referralSchema.virtual('daysUntilDeadline').get(function() {
+referralSchema.virtual('daysUntilDeadline').get(function () {
   if (!this.applicationDeadline) return null;
-  
+
   const now = new Date();
   const deadline = new Date(this.applicationDeadline);
   const diffTime = deadline - now;
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  
+
   return diffDays > 0 ? diffDays : 0;
 });
 
 // Method to check if referral is expired
-referralSchema.methods.isExpired = function() {
+referralSchema.methods.isExpired = function () {
   if (!this.applicationDeadline) return false;
   return new Date() > this.applicationDeadline;
 };
 
 // Method to increment view count
-referralSchema.methods.incrementViews = function() {
+referralSchema.methods.incrementViews = function () {
   this.views += 1;
   return this.save();
 };
 
 // Method to increment application count
-referralSchema.methods.incrementApplicationCount = function() {
+referralSchema.methods.incrementApplicationCount = function () {
   this.applicationCount += 1;
   return this.save();
 };
 
 // Method to calculate match score with job seeker
-referralSchema.methods.calculateMatchScore = function(jobSeekerSkills) {
+referralSchema.methods.calculateMatchScore = function (jobSeekerSkills) {
   if (!jobSeekerSkills || !this.skills || this.skills.length === 0) return 0;
-  
+
   const referralSkills = this.skills.map(skill => skill.toLowerCase());
   const seekerSkills = jobSeekerSkills.map(skill => skill.toLowerCase());
-  
-  const matchingSkills = referralSkills.filter(skill => 
-    seekerSkills.some(seekerSkill => 
+
+  const matchingSkills = referralSkills.filter(skill =>
+    seekerSkills.some(seekerSkill =>
       seekerSkill.includes(skill) || skill.includes(seekerSkill)
     )
   );
-  
+
   return Math.round((matchingSkills.length / referralSkills.length) * 100);
 };
 
 // Pre-save middleware to update status based on deadline
-referralSchema.pre('save', function(next) {
+referralSchema.pre('save', function (next) {
   if (this.isExpired() && this.status === 'active') {
     this.status = 'expired';
   }
@@ -199,9 +199,9 @@ referralSchema.pre('save', function(next) {
 });
 
 // Static method to find active referrals
-referralSchema.statics.findActive = function() {
-  return this.find({ 
-    status: 'active', 
+referralSchema.statics.findActive = function () {
+  return this.find({
+    status: 'active',
     isActive: true,
     $or: [
       { applicationDeadline: { $exists: false } },
@@ -211,7 +211,7 @@ referralSchema.statics.findActive = function() {
 };
 
 // Static method to find referrals by skills
-referralSchema.statics.findBySkills = function(skills) {
+referralSchema.statics.findBySkills = function (skills) {
   return this.find({
     status: 'active',
     isActive: true,

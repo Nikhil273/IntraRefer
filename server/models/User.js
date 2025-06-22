@@ -48,7 +48,8 @@ const userSchema = new mongoose.Schema({
   // Job Seeker Specific Fields
   skills: [{
     type: String,
-    trim: true
+    trim: true,
+    required: false
   }],
   experience: {
     type: Number,
@@ -57,11 +58,12 @@ const userSchema = new mongoose.Schema({
   },
   resume: {
     type: String, // Cloudinary URL
-    default: ''
+    required: false,
   },
   desiredRoles: [{
     type: String,
-    trim: true
+    trim: true,
+    required: false
   }],
 
   // Referrer Specific Fields
