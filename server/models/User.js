@@ -1,3 +1,5 @@
+// /server/models/User.js (Revised - Removed weeklyReferrals, canPostReferral)
+
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
@@ -25,7 +27,6 @@ const userSchema = new mongoose.Schema({
     enum: ['jobSeeker', 'referrer', 'admin'],
     default: 'jobSeeker'
   },
-  
   // Profile Information
   phone: {
     type: String,
@@ -43,7 +44,7 @@ const userSchema = new mongoose.Schema({
     type: String, // Cloudinary URL
     default: ''
   },
-  
+
   // Job Seeker Specific Fields
   skills: [{
     type: String,
@@ -62,7 +63,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true
   }],
-  
+
   // Referrer Specific Fields
   company: {
     type: String,
@@ -80,7 +81,7 @@ const userSchema = new mongoose.Schema({
     type: Number,
     min: [0, 'Years at company cannot be negative']
   },
-  
+
   // Subscription Information
   isSubscribed: {
     type: Boolean,
@@ -95,8 +96,8 @@ const userSchema = new mongoose.Schema({
   subscriptionId: {
     type: String
   },
-  
-  // Application Tracking (for free users)
+
+  // Application Tracking (for free job seeker users) - Existing and Kept
   weeklyApplications: {
     count: {
       type: Number,
@@ -107,7 +108,7 @@ const userSchema = new mongoose.Schema({
       default: Date.now
     }
   },
-  
+
   // Profile Status
   isVerified: {
     type: Boolean,
@@ -117,7 +118,7 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
-  
+
   // Social Links
   linkedin: {
     type: String,
@@ -136,15 +137,23 @@ const userSchema = new mongoose.Schema({
 });
 
 // Index for better query performance
-userSchema.index({ email: 1 });
-userSchema.index({ role: 1 });
-userSchema.index({ isSubscribed: 1 });
-userSchema.index({ skills: 1 });
+// userSchema.index({
+//   email: 1
+// });
+userSchema.index({
+  role: 1
+});
+userSchema.index({
+  isSubscribed: 1
+});
+userSchema.index({
+  skills: 1
+});
 
 // Hash password before saving
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-  
+
   try {
     const salt = await bcrypt.genSalt(12);
     this.password = await bcrypt.hash(this.password, salt);
@@ -155,38 +164,53 @@ userSchema.pre('save', async function(next) {
 });
 
 // Compare password method
-userSchema.methods.comparePassword = async function(candidatePassword) {
+userSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
 // Check if subscription is active
-userSchema.methods.isSubscriptionActive = function() {
+userSchema.methods.isSubscriptionActive = function () {
   if (!this.isSubscribed || !this.subscriptionEnd) return false;
   return new Date() < this.subscriptionEnd;
 };
 
-// Reset weekly application count if new week
-userSchema.methods.resetWeeklyApplicationsIfNeeded = function() {
-  const now = new Date();
-  const weekStart = new Date(this.weeklyApplications.weekStart);
-  const daysDiff = Math.floor((now - weekStart) / (1000 * 60 * 60 * 24));
-  
-  if (daysDiff >= 7) {
-    this.weeklyApplications.count = 0;
-    this.weeklyApplications.weekStart = now;
-  }
+// Helper to get the start of the current week (Monday)
+const getStartOfWeek = (date) => {
+  const d = new Date(date);
+  const day = d.getDay(); // 0 for Sunday, 1 for Monday...
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Go back to Monday
+  d.setDate(diff);
+  d.setHours(0, 0, 0, 0); // Set time to beginning of the day
+  return d;
 };
 
+// Reset weekly count if new week, for generic weekly limits
+userSchema.methods.resetWeeklyCountIfNeeded = function (weeklyTrackingField) {
+  const now = new Date();
+  const weekStart = new Date(this[weeklyTrackingField].weekStart);
+  const nowStartOfWeek = getStartOfWeek(now);
+  const weekStartStartOfWeek = getStartOfWeek(weekStart);
+
+  if (nowStartOfWeek.getTime() !== weekStartStartOfWeek.getTime()) {
+    this[weeklyTrackingField].count = 0;
+    this[weeklyTrackingField].weekStart = now; // Reset to current time
+    return true; // Indicates a reset occurred
+  }
+  return false; // No reset
+};
+
+
 // Check if user can apply (for free users)
-userSchema.methods.canApply = function() {
+userSchema.methods.canApply = function () {
   if (this.isSubscriptionActive()) return true;
-  
-  this.resetWeeklyApplicationsIfNeeded();
-  return this.weeklyApplications.count < 3;
+
+  this.resetWeeklyCountIfNeeded('weeklyApplications'); // Use the generic reset
+  const WEEKLY_APPLICATION_LIMIT = 3; // Define the limit here or as a constant elsewhere
+  return this.weeklyApplications.count < WEEKLY_APPLICATION_LIMIT;
 };
 
 // Get user profile data (excluding sensitive info)
-userSchema.methods.getPublicProfile = function() {
+userSchema.methods.getPublicProfile = function () {
   const userObject = this.toObject();
   delete userObject.password;
   delete userObject.subscriptionId;

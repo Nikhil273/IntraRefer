@@ -6,22 +6,22 @@ const authenticateToken = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
-    
+
     if (!token) {
       return res.status(401).json({ message: 'Access token required' });
     }
-    
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.userId).select('-password');
-    
+
     if (!user) {
       return res.status(401).json({ message: 'Invalid token - user not found' });
     }
-    
+
     if (!user.isActive) {
       return res.status(401).json({ message: 'Account is deactivated' });
     }
-    
+
     req.user = user;
     next();
   } catch (error) {
@@ -31,7 +31,7 @@ const authenticateToken = async (req, res, next) => {
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({ message: 'Token expired' });
     }
-    
+
     console.error('Auth middleware error:', error);
     res.status(500).json({ message: 'Authentication error' });
   }
@@ -43,13 +43,13 @@ const authorizeRole = (...roles) => {
     if (!req.user) {
       return res.status(401).json({ message: 'Authentication required' });
     }
-    
+
     if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ 
-        message: `Access denied. Required role: ${roles.join(' or ')}` 
+      return res.status(403).json({
+        message: `Access denied. Required role: ${roles.join(' or ')}`
       });
     }
-    
+
     next();
   };
 };
@@ -74,20 +74,20 @@ const checkSubscription = (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({ message: 'Authentication required' });
   }
-  
+
   // Admin always has access
   if (req.user.role === 'admin') {
     return next();
   }
-  
+
   // Check if user has active subscription
   if (!req.user.isSubscriptionActive()) {
-    return res.status(403).json({ 
+    return res.status(403).json({
       message: 'Premium subscription required for this feature',
       subscriptionRequired: true
     });
   }
-  
+
   next();
 };
 
@@ -97,26 +97,26 @@ const checkApplicationLimit = async (req, res, next) => {
     if (!req.user) {
       return res.status(401).json({ message: 'Authentication required' });
     }
-    
+
     // Admin and referrers don't have application limits
     if (req.user.role !== 'jobSeeker') {
       return next();
     }
-    
+
     // Subscribed users have unlimited applications
     if (req.user.isSubscriptionActive()) {
       return next();
     }
-    
+
     // Check if free user can apply
     if (!req.user.canApply()) {
-      return res.status(403).json({ 
+      return res.status(403).json({
         message: 'Weekly application limit reached (3 applications per week for free users)',
         limitReached: true,
         upgradeRequired: true
       });
     }
-    
+
     next();
   } catch (error) {
     console.error('Application limit check error:', error);
@@ -128,17 +128,18 @@ const checkApplicationLimit = async (req, res, next) => {
 const optionalAuth = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
+    console.log('Optional auth header:', authHeader);
     const token = authHeader && authHeader.split(' ')[1];
-    
+
     if (token) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findById(decoded.userId).select('-password');
-      
+
       if (user && user.isActive) {
         req.user = user;
       }
     }
-    
+
     next();
   } catch (error) {
     // Ignore auth errors for optional auth
