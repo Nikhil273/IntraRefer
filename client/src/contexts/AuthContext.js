@@ -1,24 +1,24 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { authAPI } from '../services/api';
-import toast from 'react-hot-toast';
+import React, { createContext, useContext, useReducer, useEffect } from "react";
+import { authAPI } from "../services/api";
+import toast from "react-hot-toast";
 
 // Initial state
 const initialState = {
   user: null,
-  token: localStorage.getItem('token'),
+  token: localStorage.getItem("token"),
   loading: true,
-  error: null
+  error: null,
 };
 
 // Action types
 const AUTH_ACTIONS = {
-  LOGIN_START: 'LOGIN_START',
-  LOGIN_SUCCESS: 'LOGIN_SUCCESS',
-  LOGIN_FAILURE: 'LOGIN_FAILURE',
-  LOGOUT: 'LOGOUT',
-  UPDATE_USER: 'UPDATE_USER',
-  CLEAR_ERROR: 'CLEAR_ERROR',
-  SET_LOADING: 'SET_LOADING'
+  LOGIN_START: "LOGIN_START",
+  LOGIN_SUCCESS: "LOGIN_SUCCESS",
+  LOGIN_FAILURE: "LOGIN_FAILURE",
+  LOGOUT: "LOGOUT",
+  UPDATE_USER: "UPDATE_USER",
+  CLEAR_ERROR: "CLEAR_ERROR",
+  SET_LOADING: "SET_LOADING",
 };
 
 // Reducer
@@ -28,54 +28,54 @@ const authReducer = (state, action) => {
       return {
         ...state,
         loading: true,
-        error: null
+        error: null,
       };
-    
+
     case AUTH_ACTIONS.LOGIN_SUCCESS:
       return {
         ...state,
         user: action.payload.user,
         token: action.payload.token,
         loading: false,
-        error: null
+        error: null,
       };
-    
+
     case AUTH_ACTIONS.LOGIN_FAILURE:
       return {
         ...state,
         user: null,
         token: null,
         loading: false,
-        error: action.payload
+        error: action.payload,
       };
-    
+
     case AUTH_ACTIONS.LOGOUT:
       return {
         ...state,
         user: null,
         token: null,
         loading: false,
-        error: null
+        error: null,
       };
-    
+
     case AUTH_ACTIONS.UPDATE_USER:
       return {
         ...state,
-        user: action.payload
+        user: action.payload,
       };
-    
+
     case AUTH_ACTIONS.CLEAR_ERROR:
       return {
         ...state,
-        error: null
+        error: null,
       };
-    
+
     case AUTH_ACTIONS.SET_LOADING:
       return {
         ...state,
-        loading: action.payload
+        loading: action.payload,
       };
-    
+
     default:
       return state;
   }
@@ -91,33 +91,33 @@ export const AuthProvider = ({ children }) => {
   // Set token in localStorage and axios headers
   const setAuthToken = (token) => {
     if (token) {
-      localStorage.setItem('token', token);
-      authAPI.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      localStorage.setItem("token", token);
+      authAPI.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     } else {
-      localStorage.removeItem('token');
-      delete authAPI.defaults.headers.common['Authorization'];
+      localStorage.removeItem("token");
+      delete authAPI.defaults.headers.common["Authorization"];
     }
   };
 
   // Load user on app start
   useEffect(() => {
     const loadUser = async () => {
-      const token = localStorage.getItem('token');
-      
+      const token = localStorage.getItem("token");
+
       if (token) {
         setAuthToken(token);
         try {
-          const response = await authAPI.get('/auth/me');
+          const response = await authAPI.get("/auth/me");
           dispatch({
             type: AUTH_ACTIONS.LOGIN_SUCCESS,
             payload: {
               user: response.data.user,
-              token
-            }
+              token,
+            },
           });
         } catch (error) {
-          console.error('Failed to load user:', error);
-          localStorage.removeItem('token');
+          console.error("Failed to load user:", error);
+          localStorage.removeItem("token");
           dispatch({ type: AUTH_ACTIONS.LOGOUT });
         }
       } else {
@@ -132,25 +132,24 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       dispatch({ type: AUTH_ACTIONS.LOGIN_START });
-      
-      const response = await authAPI.post('/auth/login', { email, password });
+
+      const response = await authAPI.post("/auth/login", { email, password });
       const { token, user } = response.data;
-      
+
       setAuthToken(token);
-      
+
       dispatch({
         type: AUTH_ACTIONS.LOGIN_SUCCESS,
-        payload: { user, token }
+        payload: { user, token },
       });
-      
-      toast.success('Login successful!');
+
+      toast.success("Login successful!");
       return { success: true };
-      
     } catch (error) {
-      const message = error.response?.data?.message || 'Login failed';
+      const message = error.response?.data?.message || "Login failed";
       dispatch({
         type: AUTH_ACTIONS.LOGIN_FAILURE,
-        payload: message
+        payload: message,
       });
       toast.error(message);
       return { success: false, error: message };
@@ -161,25 +160,24 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       dispatch({ type: AUTH_ACTIONS.LOGIN_START });
-      
-      const response = await authAPI.post('/auth/register', userData);
+
+      const response = await authAPI.post("/auth/register", userData);
       const { token, user } = response.data;
-      
+
       setAuthToken(token);
-      
+
       dispatch({
         type: AUTH_ACTIONS.LOGIN_SUCCESS,
-        payload: { user, token }
+        payload: { user, token },
       });
-      
-      toast.success('Registration successful!');
+
+      toast.success("Registration successful!");
       return { success: true };
-      
     } catch (error) {
-      const message = error.response?.data?.message || 'Registration failed';
+      const message = error.response?.data?.message || "Registration failed";
       dispatch({
         type: AUTH_ACTIONS.LOGIN_FAILURE,
-        payload: message
+        payload: message,
       });
       toast.error(message);
       return { success: false, error: message };
@@ -189,13 +187,13 @@ export const AuthProvider = ({ children }) => {
   // Logout function
   const logout = async () => {
     try {
-      await authAPI.post('/auth/logout');
+      await authAPI.post("/auth/logout");
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     } finally {
       setAuthToken(null);
       dispatch({ type: AUTH_ACTIONS.LOGOUT });
-      toast.success('Logged out successfully');
+      toast.success("Logged out successfully");
     }
   };
 
@@ -203,7 +201,7 @@ export const AuthProvider = ({ children }) => {
   const updateUser = (userData) => {
     dispatch({
       type: AUTH_ACTIONS.UPDATE_USER,
-      payload: userData
+      payload: userData,
     });
   };
 
@@ -225,34 +223,39 @@ export const AuthProvider = ({ children }) => {
   // Check if user is subscribed
   const isSubscribed = () => {
     if (!state.user) return false;
-    if (state.user.role === 'admin') return true; // Admin always has premium features
-    
-    return state.user.isSubscribed && 
-           state.user.subscriptionEnd && 
-           new Date(state.user.subscriptionEnd) > new Date();
+    if (state.user.role === "admin") return true; // Admin always has premium features
+
+    return (
+      state.user.isSubscribed &&
+      state.user.subscriptionEnd &&
+      new Date(state.user.subscriptionEnd) > new Date()
+    );
   };
 
   // Get subscription status
   const getSubscriptionStatus = () => {
     if (!state.user) return null;
-    
-    if (state.user.role === 'admin') {
+
+    if (state.user.role === "admin") {
       return {
         isActive: true,
-        type: 'admin',
-        daysRemaining: Infinity
+        type: "admin",
+        daysRemaining: Infinity,
       };
     }
-    
+
     const isActive = isSubscribed();
-    const daysRemaining = isActive 
-      ? Math.ceil((new Date(state.user.subscriptionEnd) - new Date()) / (1000 * 60 * 60 * 24))
+    const daysRemaining = isActive
+      ? Math.ceil(
+          (new Date(state.user.subscriptionEnd) - new Date()) /
+            (1000 * 60 * 60 * 24)
+        )
       : 0;
-    
+
     return {
       isActive,
       type: state.user.subscriptionType || null,
-      daysRemaining
+      daysRemaining,
     };
   };
 
@@ -270,21 +273,17 @@ export const AuthProvider = ({ children }) => {
     hasRole,
     hasAnyRole,
     isSubscribed,
-    getSubscriptionStatus
+    getSubscriptionStatus,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 // Custom hook to use auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
