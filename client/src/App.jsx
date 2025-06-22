@@ -8,13 +8,13 @@ import Footer from "./components/common/Footer";
 import LoadingSpinner from "./components/common/LoadingSpinner";
 
 // Page Components
-import LandingPage from "./pages/LandingPage";
+import LandingPage from "./pages/home/LandingPage";
 import AuthPage from "../../client/src/pages/AuthPage";
 import Dashboard from "../../client/src/pages/Dashboard";
 import Profile from "../../client/src/pages/Profile";
 import ReferralsList from "./pages/referred/ReferralsList";
 import ReferralDetail from "./pages/referred/ReferralDetail";
-import MyReferrals from "../../client/src/pages/MyReferrals";
+import MyReferrals from "./pages/MyReferral";
 import CreateReferral from "./pages/referrers/CreateReferral";
 import Applications from "../../client/src/pages/Applications";
 import ReferrerApplications from "./pages/referrers/ReferrerApplications";
@@ -40,6 +40,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Navbar />
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<LandingPage />} />
@@ -54,7 +55,6 @@ function App() {
           element={
             <ProtectedRoute>
               <div className="min-h-screen flex flex-col">
-                <Navbar />
                 <main className="flex-1">
                   <Routes>
                     {/* Common Routes */}
@@ -155,12 +155,12 @@ function App() {
                     />
                   </Routes>
                 </main>
-                <Footer />
               </div>
             </ProtectedRoute>
           }
         />
       </Routes>
+      <Footer />
     </div>
   );
 }
