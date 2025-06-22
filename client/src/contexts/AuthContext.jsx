@@ -131,9 +131,11 @@ export const AuthProvider = ({ children }) => {
   // Login function
   const login = async (email, password) => {
     try {
+      console.log("Login response:");
       dispatch({ type: AUTH_ACTIONS.LOGIN_START });
 
       const response = await authAPI.post("/auth/login", { email, password });
+
       const { token, user } = response.data;
 
       setAuthToken(token);

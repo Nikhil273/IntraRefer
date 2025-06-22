@@ -209,11 +209,8 @@
 import axios from "axios";
 import toast from "react-hot-toast";
 
-// Base API configuration from environment variable
 const API_BASE_URL =
-  import.meta.env.VITE_REACT_APP_API_URL || "http://localhost:5000/api";
-// Note: Changed REACT_APP_API_URL to VITE_REACT_APP_API_URL for Vite compatibility.
-// If you are not using Vite, keep it as REACT_APP_API_URL.
+  import.meta.env.VITE_REACT_APP_API_URL || "http://localhost:8080/api";
 
 // Main Axios instance for authenticated API calls
 const api = axios.create({
