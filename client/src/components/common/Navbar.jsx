@@ -22,10 +22,10 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div ref={ref} className="h-88 md:h-64 overflow-y-scroll">
-      <p className="w-10 h-[500px]"></p>
+    <div ref={ref} className="h-full md:h-16 overflow-y-scroll">
+      {/* <p className="w-10 h-[500px]"></p> */}
       <nav
-        className={`fixed top-0 left-0 bg-indigo-500 w-full flex items-center justify-between px-4 md:px-16 lg:px-24 xl:px-32 transition-all duration-500 z-50 ${
+        className={`fixed top-0 left-0 h-16 bg-blue-700 w-full flex items-center justify-between px-4 md:px-16 lg:px-24 xl:px-32 transition-all duration-500 z-50 ${
           isScrolled
             ? "bg-white/80 shadow-md text-gray-700 backdrop-blur-lg py-3 md:py-4"
             : "py-4 md:py-6"
@@ -34,7 +34,7 @@ const Navbar = () => {
         {/* Logo */}
         <a href="/" className="flex items-center gap-2">
           <p
-            className={`text-3xl uppercase ${
+            className={`text-3xl uppercase text-white ${
               isScrolled && "invert opacity-80"
             }`}
           >
@@ -60,28 +60,11 @@ const Navbar = () => {
               />
             </a>
           ))}
-          <button
-            className={`border px-4 py-1 text-sm font-light rounded-full cursor-pointer ${
-              isScrolled ? "text-black" : "text-white"
-            } transition-all`}
-          >
-            New Launch
-          </button>
         </div>
 
         {/* Desktop Right */}
         <div className="hidden md:flex items-center gap-4">
-          <svg
-            className={`h-6 w-6 ${isScrolled ? "invert" : ""}`}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <button className="bg-black text-white px-8 py-2.5 rounded-full ml-4 transition-all duration-500">
+          <button className="bg-black text-white px-8 py-2.5 rounded-xl ml-4 transition-all duration-500">
             Login
           </button>
         </div>
@@ -130,11 +113,7 @@ const Navbar = () => {
             </a>
           ))}
 
-          <button className="border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all">
-            New Launch
-          </button>
-
-          <button className="bg-black text-white px-8 py-2.5 rounded-full transition-all duration-500">
+          <button className="bg-black text-white px-8 py-2.5 rounded-xl transition-all duration-500">
             Login
           </button>
         </div>
