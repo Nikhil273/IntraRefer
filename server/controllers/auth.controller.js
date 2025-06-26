@@ -1,50 +1,52 @@
 // /server/controllers/authController.js
 
-const jwt = require('jsonwebtoken');
-const { body, validationResult } = require('express-validator');
-const User = require('../models/User'); // Ensure correct path to your User model
-const asyncHandler = require('express-async-handler'); // For simplifying error handling in async functions
+const jwt = require("jsonwebtoken");
+const { body, validationResult } = require("express-validator");
+const User = require("../models/User"); // Ensure correct path to your User model
+const asyncHandler = require("express-async-handler"); // For simplifying error handling in async functions
 
 // --- Helper Functions ---
 
 // Generate JWT token
 const generateToken = (userId) => {
   // expiresIn '7d' matches your current implementation
-  return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
+  return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
 // --- Validation Rules ---
 
 const registerValidation = [
-  body('name')
+  body("name")
     .trim()
     .isLength({ min: 2, max: 50 })
-    .withMessage('Name must be between 2 and 50 characters'),
-  body('email')
+    .withMessage("Name must be between 2 and 50 characters"),
+  body("email")
     .isEmail()
     .normalizeEmail()
-    .withMessage('Please provide a valid email'),
-  body('password')
+    .withMessage("Please provide a valid email"),
+  body("password")
     .isLength({ min: 6 })
-    .withMessage('Password must be at least 6 characters long'),
-  body('role')
-    .isIn(['jobSeeker', 'referrer']) // Admin role typically not allowed for direct registration
-    .withMessage('Role must be either jobSeeker or referrer')
+    .withMessage("Password must be at least 6 characters long"),
+  body("role")
+    .isIn(["jobSeeker", "referrer"]) // Admin role typically not allowed for direct registration
+    .withMessage("Role must be either jobSeeker or referrer"),
 ];
 
 const loginValidation = [
-  body('email')
+  body("email")
     .isEmail()
     .normalizeEmail()
-    .withMessage('Please provide a valid email'),
-  body('password')
-    .notEmpty()
-    .withMessage('Password is required')
+    .withMessage("Please provide a valid email"),
+  body("password").notEmpty().withMessage("Password is required"),
 ];
 
 const changePasswordValidation = [
-  body('currentPassword').notEmpty().withMessage('Current password is required'),
-  body('newPassword').isLength({ min: 6 }).withMessage('New password must be at least 6 characters long')
+  body("currentPassword")
+    .notEmpty()
+    .withMessage("Current password is required"),
+  body("newPassword")
+    .isLength({ min: 6 })
+    .withMessage("New password must be at least 6 characters long"),
 ];
 
 // --- Controller Functions ---
@@ -57,7 +59,10 @@ const registerUser = asyncHandler(async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     res.status(400);
-    throw new Error('Validation failed: ' + JSON.stringify(errors.array())); // Throw error for asyncHandler
+    // Create a custom error property to pass validation errors
+    const error = new Error("Validation failed");
+    error.errors = errors.array(); // Attach the array of validation errors directly
+    throw error;
   }
 
   const { name, email, password, role } = req.body;
@@ -66,7 +71,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     res.status(400);
-    throw new Error('User already exists with this email');
+    throw new Error("User already exists with this email");
   }
 
   // Create new user
@@ -74,7 +79,7 @@ const registerUser = asyncHandler(async (req, res) => {
     name,
     email,
     password,
-    role
+    role,
   });
 
   await user.save();
@@ -82,13 +87,16 @@ const registerUser = asyncHandler(async (req, res) => {
   // Generate token
   const token = generateToken(user._id);
 
-  // Return user data (excluding password)
-  const userData = user.getPublicProfile();
-
   res.status(201).json({
-    message: 'User registered successfully',
+    message: "User registered successfully",
     token,
-    user: userData
+    user: {
+      name: user.name, // Use user.name from the saved user object
+      role: user.role, // Use user.role from the saved user object
+      email: user.email, // Use user.email from the saved user object
+      // Add ID if your frontend expects it
+      id: user._id,
+    },
   });
 });
 
@@ -100,7 +108,9 @@ const loginUser = asyncHandler(async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     res.status(400);
-    throw new Error('Validation failed: ' + JSON.stringify(errors.array()));
+    const error = new Error("Validation failed");
+    error.errors = errors.array();
+    throw error;
   }
 
   const { email, password } = req.body;
@@ -109,32 +119,41 @@ const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) {
     res.status(400);
-    throw new Error('Invalid credentials');
+    throw new Error("Invalid credentials");
   }
 
   // Check if account is active
   if (!user.isActive) {
     res.status(400);
-    throw new Error('Account is deactivated');
+    throw new Error("Account is deactivated");
   }
 
   // Verify password
   const isPasswordValid = await user.comparePassword(password);
   if (!isPasswordValid) {
     res.status(400);
-    throw new Error('Invalid credentials');
+    throw new Error("Invalid credentials");
   }
 
   // Generate token
   const token = generateToken(user._id);
 
   // Return user data (excluding password)
-  const userData = user.getPublicProfile();
+  // Assuming user.getPublicProfile() exists and returns a clean user object
+  const userData = user.getPublicProfile
+    ? user.getPublicProfile()
+    : {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        // ... any other public fields
+      };
 
   res.json({
-    message: 'Login successful',
+    message: "Login successful",
     token,
-    user: userData
+    user: userData, // Send the full public user data
   });
 });
 
@@ -143,7 +162,17 @@ const loginUser = asyncHandler(async (req, res) => {
 // @access  Private
 const getMe = asyncHandler(async (req, res) => {
   // req.user is populated by authenticateToken middleware
-  const userData = req.user.getPublicProfile();
+  // Ensure getPublicProfile() method exists on your User model
+  // Or manually construct the public profile
+  const userData = req.user.getPublicProfile
+    ? req.user.getPublicProfile()
+    : {
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+        role: req.user.role,
+        // ... any other public fields
+      };
   res.json({ user: userData });
 });
 
@@ -155,8 +184,8 @@ const refreshToken = asyncHandler(async (req, res) => {
   const token = generateToken(req.user._id);
 
   res.json({
-    message: 'Token refreshed successfully',
-    token
+    message: "Token refreshed successfully",
+    token,
   });
 });
 
@@ -166,7 +195,7 @@ const refreshToken = asyncHandler(async (req, res) => {
 const logoutUser = asyncHandler(async (req, res) => {
   // In a stateless JWT system, logout is handled client-side
   // This endpoint exists for consistency and potential future enhancements
-  res.json({ message: 'Logout successful' });
+  res.json({ message: "Logout successful" });
 });
 
 // @desc    Change user password
@@ -177,55 +206,54 @@ const changePassword = asyncHandler(async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     res.status(400);
-    throw new Error('Validation failed: ' + JSON.stringify(errors.array()));
+    const error = new Error("Validation failed");
+    error.errors = errors.array();
+    throw error;
   }
 
   const { currentPassword, newPassword } = req.body;
 
-  // Get user with password (need to re-fetch if password field wasn't selected by middleware)
-  // Or, if your authenticateToken *only* selects -password, you'd need to fetch again with .select('+password')
-  // For simplicity, assuming req.user comes with enough info or we refetch.
-  // Given your `authenticateToken` does `User.findById(decoded.userId).select('-password');`
-  // we need to refetch the user including password for `comparePassword`.
-  const user = await User.findById(req.user._id).select('+password'); // Explicitly select password
+  const user = await User.findById(req.user._id).select("+password"); // Explicitly select password
 
   if (!user) {
     res.status(404);
-    throw new Error('User not found.'); // Should ideally not happen if authenticateToken worked
+    throw new Error("User not found.");
   }
 
   // Verify current password
   const isCurrentPasswordValid = await user.comparePassword(currentPassword);
   if (!isCurrentPasswordValid) {
     res.status(400);
-    throw new Error('Current password is incorrect');
+    throw new Error("Current password is incorrect");
   }
 
   // Update password (pre-save hook will hash it)
   user.password = newPassword;
   await user.save();
 
-  res.json({ message: 'Password changed successfully' });
+  res.json({ message: "Password changed successfully" });
 });
 
 // @desc    Deactivate user account
 // @route   POST /api/auth/deactivate
 // @access  Private
 const deactivateAccount = asyncHandler(async (req, res) => {
-  // Using findByIdAndUpdate is efficient here
-  const user = await User.findByIdAndUpdate(req.user._id, { isActive: false }, { new: true });
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { isActive: false },
+    { new: true }
+  );
 
   if (!user) {
     res.status(404);
-    throw new Error('User not found or already deactivated.');
+    throw new Error("User not found or already deactivated.");
   }
 
-  res.json({ message: 'Account deactivated successfully' });
+  res.json({ message: "Account deactivated successfully" });
 });
 
-
 module.exports = {
-  generateToken, // Export for potential use in other places if needed (e.g. admin creating users)
+  generateToken,
   registerValidation,
   loginValidation,
   changePasswordValidation,
@@ -235,5 +263,5 @@ module.exports = {
   refreshToken,
   logoutUser,
   changePassword,
-  deactivateAccount
+  deactivateAccount,
 };

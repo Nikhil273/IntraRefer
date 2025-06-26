@@ -1,216 +1,8 @@
-// import axios from "axios";
-// import toast from "react-hot-toast";
-
-// // Base API configuration
-// const API_BASE_URL =
-//   import.meta.env.REACT_APP_API_URL || "http://localhost:5000/api";
-
-// // Create axios instance
-// const api = axios.create({
-//   baseURL: API_BASE_URL,
-//   timeout: 10000,
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-// });
-
-// // Auth API instance (for auth-related requests)
-// export const authAPI = axios.create({
-//   baseURL: API_BASE_URL,
-//   timeout: 10000,
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-// });
-
-// // Request interceptor to add auth token
-// api.interceptors.request.use(
-//   (config) => {
-//     const token = localStorage.getItem("token");
-//     if (token) {
-//       config.headers.Authorization = `Bearer ${token}`;
-//     }
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
-
-// // Response interceptor for error handling
-// api.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     const message = error.response?.data?.message || "An error occurred";
-
-//     // Handle specific error cases
-//     if (error.response?.status === 401) {
-//       // Unauthorized - clear token and redirect to login
-//       localStorage.removeItem("token");
-//       window.location.href = "/auth";
-//       toast.error("Session expired. Please login again.");
-//     } else if (error.response?.status === 403) {
-//       // Forbidden
-//       if (error.response.data?.subscriptionRequired) {
-//         toast.error("Premium subscription required for this feature");
-//       } else if (error.response.data?.limitReached) {
-//         toast.error(
-//           "Weekly application limit reached. Upgrade to premium for unlimited applications."
-//         );
-//       } else {
-//         toast.error("Access denied");
-//       }
-//     } else if (error.response?.status === 429) {
-//       // Rate limit
-//       toast.error("Too many requests. Please try again later.");
-//     } else if (error.response?.status >= 500) {
-//       // Server error
-//       toast.error("Server error. Please try again later.");
-//     }
-
-//     return Promise.reject(error);
-//   }
-// );
-
-// // Auth API Services
-// export const authService = {
-//   login: (credentials) => authAPI.post("/auth/login", credentials),
-//   register: (userData) => authAPI.post("/auth/register", userData),
-//   logout: () => authAPI.post("/auth/logout"),
-//   getCurrentUser: () => authAPI.get("/auth/me"),
-//   refreshToken: () => authAPI.post("/auth/refresh"),
-//   changePassword: (passwords) =>
-//     authAPI.put("/auth/change-password", passwords),
-//   deactivateAccount: () => authAPI.post("/auth/deactivate"),
-// };
-
-// // User API Services
-// export const userService = {
-//   getProfile: () => api.get("/users/profile"),
-//   updateProfile: (profileData) => api.put("/users/profile", profileData),
-//   uploadAvatar: (formData) =>
-//     api.post("/users/upload-avatar", formData, {
-//       headers: { "Content-Type": "multipart/form-data" },
-//     }),
-//   uploadResume: (formData) =>
-//     api.post("/users/upload-resume", formData, {
-//       headers: { "Content-Type": "multipart/form-data" },
-//     }),
-//   getUsers: (params) => api.get("/users", { params }),
-//   getUserById: (id) => api.get(`/users/${id}`),
-//   updateUserStatus: (id, status) => api.put(`/users/${id}/status`, { status }),
-//   deleteUser: (id) => api.delete(`/users/${id}`),
-// };
-
-// // Referral API Services
-// export const referralService = {
-//   getReferrals: (params) => api.get("/referrals", { params }),
-//   getReferralById: (id) => api.get(`/referrals/${id}`),
-//   createReferral: (referralData) => api.post("/referrals", referralData),
-//   updateReferral: (id, referralData) =>
-//     api.put(`/referrals/${id}`, referralData),
-//   deleteReferral: (id) => api.delete(`/referrals/${id}`),
-//   getMyReferrals: (params) => api.get("/referrals/my-referrals", { params }),
-//   searchReferrals: (query) =>
-//     api.get(`/referrals/search?q=${encodeURIComponent(query)}`),
-//   getMatchingReferrals: () => api.get("/referrals/matching"),
-//   incrementViews: (id) => api.post(`/referrals/${id}/view`),
-// };
-
-// // Application API Services
-// export const applicationService = {
-//   getApplications: (params) => api.get("/applications", { params }),
-//   getApplicationById: (id) => api.get(`/applications/${id}`),
-//   createApplication: (applicationData) =>
-//     api.post("/applications", applicationData),
-//   updateApplication: (id, applicationData) =>
-//     api.put(`/applications/${id}`, applicationData),
-//   deleteApplication: (id) => api.delete(`/applications/${id}`),
-//   getMyApplications: (params) =>
-//     api.get("/applications/my-applications", { params }),
-//   getReferrerApplications: (params) =>
-//     api.get("/applications/referrer-applications", { params }),
-//   updateApplicationStatus: (id, status, notes) =>
-//     api.put(`/applications/${id}/status`, { status, notes }),
-//   withdrawApplication: (id) => api.put(`/applications/${id}/withdraw`),
-//   getApplicationStats: () => api.get("/applications/stats"),
-// };
-
-// // Payment API Services
-// export const paymentService = {
-//   getSubscriptionPlans: () => api.get("/payments/plans"),
-//   createOrder: (subscriptionType) =>
-//     api.post("/payments/create-order", { subscriptionType }),
-//   verifyPayment: (paymentData) => api.post("/payments/verify", paymentData),
-//   getSubscriptionStatus: () => api.get("/payments/subscription-status"),
-//   getPaymentHistory: () => api.get("/payments/history"),
-// };
-
-// // Admin API Services
-// export const adminService = {
-//   getDashboardStats: () => api.get("/admin/dashboard-stats"),
-//   getAllUsers: (params) => api.get("/admin/users", { params }),
-//   getAllReferrals: (params) => api.get("/admin/referrals", { params }),
-//   getAllApplications: (params) => api.get("/admin/applications", { params }),
-//   getAllPayments: (params) => api.get("/admin/payments", { params }),
-//   updateUserRole: (id, role) => api.put(`/admin/users/${id}/role`, { role }),
-//   banUser: (id, reason) => api.put(`/admin/users/${id}/ban`, { reason }),
-//   unbanUser: (id) => api.put(`/admin/users/${id}/unban`),
-//   deleteReferral: (id) => api.delete(`/admin/referrals/${id}`),
-//   getAnalytics: (params) => api.get("/admin/analytics", { params }),
-// };
-
-// // File upload helper
-// export const uploadFile = async (file, type = "avatar") => {
-//   const formData = new FormData();
-//   formData.append(type, file);
-
-//   if (type === "avatar") {
-//     return userService.uploadAvatar(formData);
-//   } else if (type === "resume") {
-//     return userService.uploadResume(formData);
-//   }
-
-//   throw new Error("Invalid file type");
-// };
-
-// // Helper function to handle API errors
-// export const handleApiError = (error) => {
-//   if (error.response) {
-//     // Server responded with error status
-//     const message = error.response.data?.message || "An error occurred";
-//     return { success: false, message, status: error.response.status };
-//   } else if (error.request) {
-//     // Request was made but no response received
-//     return {
-//       success: false,
-//       message: "Network error. Please check your connection.",
-//     };
-//   } else {
-//     // Something else happened
-//     return {
-//       success: false,
-//       message: error.message || "An unexpected error occurred",
-//     };
-//   }
-// };
-
-// // Helper function for successful responses
-// export const handleApiSuccess = (
-//   response,
-//   defaultMessage = "Operation successful"
-// ) => {
-//   const message = response.data?.message || defaultMessage;
-//   return { success: true, message, data: response.data };
-// };
-
-// export default api;
-
 import axios from "axios";
 import toast from "react-hot-toast";
 
 const API_BASE_URL =
-  import.meta.env.VITE_REACT_APP_API_URL || "http://localhost:8080/api";
+  import.meta.env.VITE_REACT_APP_API_URL || "http://localhost:5000/api";
 
 // Main Axios instance for authenticated API calls
 const api = axios.create({
@@ -246,6 +38,9 @@ api.interceptors.request.use(
 );
 
 // --- Response Interceptor for Global Error Handling ---
+// This interceptor handles toast notifications for various HTTP status codes.
+// It explicitly returns a rejected Promise, which will be caught by the
+// try...catch blocks in individual service methods like those in authService.
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -254,15 +49,12 @@ api.interceptors.response.use(
       const message = error.response.data?.message || "An error occurred";
 
       if (error.response.status === 401) {
-        // Unauthorized - session expired, invalid token, etc.
         localStorage.removeItem("token");
-        // Only redirect if not already on the auth page to prevent infinite loops
         if (window.location.pathname !== "/auth") {
           window.location.href = "/auth";
         }
         toast.error("Session expired. Please login again.");
       } else if (error.response.status === 403) {
-        // Forbidden - access denied due to role or subscription
         if (error.response.data?.subscriptionRequired) {
           toast.error("Premium subscription required for this feature.");
         } else if (error.response.data?.limitReached) {
@@ -273,14 +65,11 @@ api.interceptors.response.use(
           toast.error("Access denied.");
         }
       } else if (error.response.status === 429) {
-        // Too Many Requests (Rate Limit Exceeded)
         toast.error("Too many requests. Please try again later.");
       } else if (error.response.status >= 500) {
-        // Server Error (5xx)
         toast.error("Server error. Please try again later.");
       } else if (error.response.status >= 400) {
-        // Other client errors (4xx) like 400 Bad Request, 404 Not Found
-        toast.error(message);
+        toast.error(message); // Catch-all for other 4xx errors
       }
     } else if (error.request) {
       // Request was made but no response was received (e.g., network error)
@@ -290,33 +79,86 @@ api.interceptors.response.use(
       toast.error(error.message || "An unexpected error occurred.");
     }
 
+    // Crucially, reject the promise so that the calling try...catch block
+    // in the service methods (like authService.login/register) can catch it.
     return Promise.reject(error);
   }
 );
 
-// --- API Service Definitions ---
+// Helper function to handle successful API responses
+export const handleApiSuccess = (
+  response,
+  defaultMessage = "Operation successful"
+) => {
+  const message = response.data?.message || defaultMessage;
+  return { success: true, message, data: response.data };
+};
 
-// Auth API Services
-// These services use `authAPI` for direct auth calls managed by AuthContext,
-// or `api` for calls needing the global interceptor after initial login.
+// Helper function to handle API errors, returning a structured object.
+// This function is useful for components that need more granular error handling
+// beyond the global toast, or for displaying errors directly in form fields.
+export const handleApiError = (error) => {
+  // Check if there's a response from the server (e.g., 4xx, 5xx)
+  if (error.response) {
+    const message = error.response.data?.message || "An error occurred";
+    return {
+      success: false,
+      message,
+      status: error.response.status,
+      data: error.response.data, // Include full data for specific error details (e.g., validation errors)
+    };
+  }
+  // Check if the request was made but no response was received (e.g., network issues, server offline)
+  else if (error.request) {
+    return {
+      success: false,
+      message: "Network error. Please check your connection.",
+      status: null,
+      data: null,
+    };
+  }
+  // Something happened in setting up the request that triggered an Error
+  else {
+    return {
+      success: false,
+      message: error.message || "An unexpected error occurred",
+      status: null,
+      data: null,
+    };
+  }
+};
+
+// --- API Service Definitions ---
 export const authService = {
-  login: (credentials) => authAPI.post("/auth/login", credentials),
-  register: (userData) => authAPI.post("/auth/register", userData),
+  // Login method: Now uses try...catch to return structured success/error responses
+  login: async (credentials) => {
+    try {
+      const response = await authAPI.post("/auth/login", credentials);
+      return handleApiSuccess(response, "Login successful");
+    } catch (error) {
+      return handleApiError(error); // Explicitly return the structured error object
+    }
+  },
+  // Register method: Now uses try...catch to return structured success/error responses
+  register: async (userData) => {
+    try {
+      const response = await authAPI.post("/auth/register", userData);
+      return handleApiSuccess(response, "Registration successful");
+    } catch (error) {
+      return handleApiError(error); // Explicitly return the structured error object
+    }
+  },
   // These calls should leverage the global `api` instance once authenticated
   logout: () => api.post("/auth/logout"),
-  getCurrentUser: () => api.get("/auth/me"), // AuthContext uses authAPI.get("/auth/me")
-  // Let AuthContext manually set header for getCurrentUser if it uses authAPI
-  // For consistency, if `getCurrentUser` is hit post-login, `api` is better.
+  getCurrentUser: () => api.get("/auth/me"),
   refreshToken: () => api.post("/auth/refresh"),
   changePassword: (passwords) => api.put("/auth/change-password", passwords),
   deactivateAccount: () => api.post("/auth/deactivate"),
 };
 
-// User API Services
 export const userService = {
-  // Path changed to /users/me for current user profile as used in Profile component
   getProfile: () => api.get("/users/me"),
-  updateProfile: (profileData) => api.patch("/users/me", profileData), // Changed to PATCH as common for partial updates
+  updateProfile: (profileData) => api.patch("/users/me", profileData),
   uploadAvatar: (formData) =>
     api.post("/users/upload-avatar", formData, {
       headers: { "Content-Type": "multipart/form-data" },
@@ -325,21 +167,19 @@ export const userService = {
     api.post("/users/upload-resume", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
-  getUsers: (params) => api.get("/users", { params }), // General users list (may need admin role on backend)
+  getUsers: (params) => api.get("/users", { params }),
   getUserById: (id) => api.get(`/users/${id}`),
   updateUserStatus: (id, status) => api.put(`/users/${id}/status`, { status }),
   deleteUser: (id) => api.delete(`/users/${id}`),
 };
 
-// Referral API Services
 export const referralService = {
-  getReferrals: (params) => api.get("/referrals", { params }), // General list, can be used by admin
+  getReferrals: (params) => api.get("/referrals", { params }),
   getReferralById: (id) => api.get(`/referrals/${id}`),
   createReferral: (referralData) => api.post("/referrals", referralData),
   updateReferral: (id, referralData) =>
     api.put(`/referrals/${id}`, referralData),
   deleteReferral: (id) => api.delete(`/referrals/${id}`),
-  // Renamed to match component usage where `my-received` and `my-provided` are differentiated
   getMyReceivedReferrals: (params) =>
     api.get("/referrals/my-received", { params }),
   getMyProvidedReferrals: (params) =>
@@ -350,44 +190,38 @@ export const referralService = {
   incrementViews: (id) => api.post(`/referrals/${id}/view`),
 };
 
-// Application API Services
 export const applicationService = {
-  getApplications: (params) => api.get("/applications", { params }), // General list, can be used by admin
+  getApplications: (params) => api.get("/applications", { params }),
   getApplicationById: (id) => api.get(`/applications/${id}`),
   createApplication: (applicationData) =>
     api.post("/applications", applicationData),
   updateApplication: (id, applicationData) =>
     api.put(`/applications/${id}`, applicationData),
   deleteApplication: (id) => api.delete(`/applications/${id}`),
-  // Renamed/aligned to match component usage
-  getMyApplications: (params) => api.get("/applications/my", { params }), // For job seeker
+  getMyApplications: (params) => api.get("/applications/my", { params }),
   getProvidedApplications: (params) =>
-    api.get("/applications/provided", { params }), // For referral provider
+    api.get("/applications/provided", { params }),
   updateApplicationStatus: (id, status, notes) =>
     api.put(`/applications/${id}/status`, { status, notes }),
   withdrawApplication: (id) => api.put(`/applications/${id}/withdraw`),
   getApplicationStats: () => api.get("/applications/stats"),
-  // New method for ApplicationCountWidget
   getApplicationCounts: () => api.get("/applications/counts"),
 };
 
-// New Job API Services for job-related actions (e.g., viewed jobs)
 export const jobService = {
   getJobs: (params) => api.get("/jobs", { params }),
   getJobById: (id) => api.get(`/jobs/${id}`),
   createJob: (jobData) => api.post("/jobs", jobData),
   updateJob: (id, jobData) => api.put(`/jobs/${id}`, jobData),
   deleteJob: (id) => api.delete(`/jobs/${id}`),
-  getJobsViewedByMe: () => api.get("/jobs/viewed-by-me"), // For JobSeekerJobActivity
-  incrementJobView: (id) => api.post(`/jobs/${id}/view`), // For tracking job views
+  getJobsViewedByMe: () => api.get("/jobs/viewed-by-me"),
+  incrementJobView: (id) => api.post(`/jobs/${id}/view`),
 };
 
-// Payment API Services
 export const paymentService = {
   getSubscriptionPlans: () => api.get("/payments/plans"),
-  // Aligned with `handleSubscribe` in Subscription component
   subscribeToPlan: (planId) => api.post("/subscriptions/subscribe", { planId }),
-  cancelSubscription: () => api.post("/subscriptions/cancel"), // Aligned with Subscription component
+  cancelSubscription: () => api.post("/subscriptions/cancel"),
   createOrder: (subscriptionType) =>
     api.post("/payments/create-order", { subscriptionType }),
   verifyPayment: (paymentData) => api.post("/payments/verify", paymentData),
@@ -395,26 +229,22 @@ export const paymentService = {
   getPaymentHistory: () => api.get("/payments/history"),
 };
 
-// Admin API Services
 export const adminService = {
-  getDashboardStats: () => api.get("/admin/dashboard-summary"), // Aligned path
+  getDashboardStats: () => api.get("/admin/dashboard-summary"),
   getAllUsers: (params) => api.get("/admin/users", { params }),
-  getAllReferrals: (params) => api.get("/admin/referrals", { params }), // Admin can get all referrals
-  getAllApplications: (params) => api.get("/admin/applications", { params }), // Admin can get all applications
+  getAllReferrals: (params) => api.get("/admin/referrals", { params }),
+  getAllApplications: (params) => api.get("/admin/applications", { params }),
   getAllPayments: (params) => api.get("/admin/payments", { params }),
   updateUserRole: (id, role) => api.put(`/admin/users/${id}/role`, { role }),
   banUser: (id, reason) => api.put(`/admin/users/${id}/ban`, { reason }),
   unbanUser: (id) => api.put(`/admin/users/${id}/unban`),
   deleteReferral: (id) => api.delete(`/admin/referrals/${id}`),
   getAnalytics: (params) => api.get("/admin/analytics", { params }),
-  // Add any other admin specific methods
 };
 
-// File upload helper
-// This helper should now call the service methods
 export const uploadFile = async (file, type = "avatar") => {
   const formData = new FormData();
-  formData.append(type, file); // 'avatar' or 'resume' should match backend expected field name
+  formData.append(type, file);
 
   if (type === "avatar") {
     return userService.uploadAvatar(formData);
@@ -423,44 +253,6 @@ export const uploadFile = async (file, type = "avatar") => {
   }
 
   throw new Error("Invalid file type for upload.");
-};
-
-// Helper function to handle API errors
-// This function is still useful for components that need more granular error handling
-// beyond the global toast, or for displaying errors directly in form fields.
-export const handleApiError = (error) => {
-  if (error.response) {
-    const message = error.response.data?.message || "An error occurred";
-    return {
-      success: false,
-      message,
-      status: error.response.status,
-      data: error.response.data,
-    };
-  } else if (error.request) {
-    return {
-      success: false,
-      message: "Network error. Please check your connection.",
-      status: null,
-      data: null,
-    };
-  } else {
-    return {
-      success: false,
-      message: error.message || "An unexpected error occurred",
-      status: null,
-      data: null,
-    };
-  }
-};
-
-// Helper function for successful responses
-export const handleApiSuccess = (
-  response,
-  defaultMessage = "Operation successful"
-) => {
-  const message = response.data?.message || defaultMessage;
-  return { success: true, message, data: response.data };
 };
 
 export const subscriptionAPI = {};
